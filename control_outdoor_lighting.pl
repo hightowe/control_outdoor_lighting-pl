@@ -32,7 +32,7 @@ use HTTP::Request::Common;                # libhttp-message-perl
 use JSON::XS;                             # libjson-xs-perl
 use Time::Piece;                          # core
 use Time::Seconds;                        # core
-use File::Basename qw(basename);          # core
+use File::Basename qw(basename dirname);  # core
 use File::Slurp qw(read_file write_file); # core
 use Data::Dumper;                         # core
 $Data::Dumper::Indent = 1;
@@ -203,7 +203,7 @@ exit 0;
 ##################################
 
 sub load_conf_file() {
-  my $cf = basename($0).'.conf';
+  my $cf = dirname($0).'/'.basename($0).'.conf';
   die "Do not see a conf files at: $cf\n" if (! -r $cf);
   my $conf = eval(read_file($cf));
   return $conf;
