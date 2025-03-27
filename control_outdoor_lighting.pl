@@ -30,6 +30,7 @@ use LWP::UserAgent;                       # libwww-perl
 use IO::Socket::SSL;                      # libio-socket-ssl-perl
 use HTTP::Request::Common;                # libhttp-message-perl
 use JSON::XS;                             # libjson-xs-perl
+use Cwd qw(realpath);                     # core
 use Time::Piece;                          # core
 use Time::Seconds;                        # core
 use File::Basename qw(basename dirname);  # core
@@ -203,7 +204,7 @@ exit 0;
 ##################################
 
 sub load_conf_file() {
-  my $cf = dirname($0).'/'.basename($0).'.conf';
+  my $cf = realpath(dirname($0).'/'.basename($0).'.conf');
   die "Do not see a conf files at: $cf\n" if (! -r $cf);
   my $conf = eval(read_file($cf));
   return $conf;
