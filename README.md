@@ -11,3 +11,7 @@ but it should also work with a KAUF PLF10 (https://kaufha.com/plf10)
 if you remove the power consumption sensor readings code that the PLF10
 does not support.
 
+# show_daily_power_usage.pl
+A perl script to parse my control_outdoor_lighting.pl logs and calculate
+and report daily power usage (KWh) results.
+
