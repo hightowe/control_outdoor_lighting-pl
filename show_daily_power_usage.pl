@@ -48,10 +48,21 @@ my $SVs = extract_sensor_values(\%logs);
 my $TDEs = {};
 foreach my $this_log_tm (sort keys %{$SVs}) {
   my ($day) = $this_log_tm =~ m/^(\d\d\d\d-\d\d-\d\d)T/;
+  my $tde = $SVs->{$this_log_tm}->{total_daily_energy}->{value};
   if (! exists($TDEs->{$day})) {
-    $TDEs->{$day}->{beg} = $SVs->{$this_log_tm}->{total_daily_energy}->{value};
+    $TDEs->{$day}->{beg} = $tde;
   } else {
-    $TDEs->{$day}->{end} = $SVs->{$this_log_tm}->{total_daily_energy}->{value};
+    # Keep overwriting the "end" with the next TDE value so that it will
+    # end up with the last TDE for this $day.
+    $TDEs->{$day}->{end} = $tde;
+    # In mid-April 2025, I got a pre-release version of the v2.09 firmware
+    # that allows resetting of the total_daily_energy value via the API URL
+    # /button/manual_zero_tde/press and so this script now needs to account
+    # for the "beg" value to drop within a day, if the TDE is reset. This is
+    # obviously not the perfect way to account for these resets, but for my
+    # use case it should work just fine... Alternatively, we could seed
+    # $TDEs->{$day}->{use} here with usage on this day up to the reset.
+    $TDEs->{$day}->{beg} = $tde if ($TDEs->{$day}->{beg} > $tde);
   }
 }
 foreach my $day (sort keys %{$TDEs}) {
